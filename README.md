@@ -2,6 +2,7 @@
 Sebuah generator Discord Rich Presence (RPC) yang ringan dan dapat dikustomisasi sepenuhnya. Aplikasi ini berjalan secara otomatis di latar belakang untuk berbagai software, termasuk FL Studio, Ableton Live, CapCut, dan lainnya.
 ## ✨ Fitur Utama
 - **Generic Fallback Mode**: Secara otomatis mendeteksi software apapun yang sedang Anda buka, meski tidak ada di daftar.
+- **Smart Sticky Presence**: Status tetap aktif selama software masih berjalan, meskipun Anda sedang membuka folder atau berada di desktop.
 - **Dynamic Icon Mapping**: Mendukung logo spesifik (seperti Brave/Chrome) menggunakan satu Master Application ID.
 - **Integrasi System Tray**: Berjalan di area notifikasi (dekat jam), memudahkan kontrol tanpa memenuhi taskbar.
 - **Exclusion List**: Cerdas mengabaikan proses sistem seperti Explorer agar status Discord tetap akurat.
@@ -9,7 +10,7 @@ Sebuah generator Discord Rich Presence (RPC) yang ringan dan dapat dikustomisasi
 ## 🚀 Cara Instalasi
 ### Opsi 1: Download File Siap Pakai (Rekomendasi)
 1. Kunjungi halaman [Releases](https://github.com/makcrtve/UniversalDiscordRPC/releases).
-2. Unduh file `UDRPC_v1.3_Release.zip` versi terbaru.
+2. Unduh file `UDRPC_v1.4_Release.zip` versi terbaru.
 3. Ekstrak dan jalankan `UniversalDiscordRPC.exe`.
 ### Opsi 2: Build Sendiri (Developer)
 1. Unduh source code dan jalankan `build.bat`. Script akan mengurus segalanya mulai dari instalasi library hingga pembuatan paket ZIP rilis.
@@ -32,6 +33,5 @@ Aplikasi ini mendukung variabel dinamis seperti:
 - `pystray`
 - `Pillow`
 - `pyinstaller` (untuk proses build)
-
 ---
 *Dibuat dengan ❤️ untuk para kreator oleh **makcrtve**.*
