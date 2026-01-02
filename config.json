@@ -1,4 +1,16 @@
 {
+  "_bantuan": [
+    "--- INSTRUKSI PENGGUNAAN ---",
+    "polling_interval: Berapa detik sekali aplikasi mengecek software (default: 5).",
+    "apps: Daftar aplikasi yang ingin dideteksi oleh Discord RPC.",
+    "  - name: Nama aplikasi yang akan muncul di log debug.",
+    "  - process_name: Nama file .exe dari aplikasi (bisa lebih dari satu).",
+    "  - client_id: ID dari Discord Developer Portal.",
+    "  - large_image: Key foto yang sudah di-upload di Discord Developer Portal.",
+    "  - details_format: Baris pertama status (bisa pakai {window_title}, {app_name}, {process_name}).",
+    "  - state_format: Baris kedua status (teks bebas, bisa pakai variabel juga).",
+    "---------------------------"
+  ],
   "polling_interval": 5,
   "apps": [
     {

@@ -45,25 +45,44 @@ def is_already_running():
         return True
     return False
 
-def get_window_title_from_pid(target_pid):
+def get_window_title_from_pids(target_pids, fallback_title="Unknown"):
+    """ Searches for a window title across a set of PIDs and their children. """
     WNDENUMPROC = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.c_void_p, ctypes.c_void_p)
     found_title = [None]
 
+    # Expand the set of PIDs to include all children
+    all_target_pids = set(target_pids)
+    for tpid in target_pids:
+        try:
+            process = psutil.Process(tpid)
+            for child in process.children(recursive=True):
+                all_target_pids.add(child.pid)
+        except:
+            pass
+
     def callback(hwnd, lparam):
-        if user32.IsWindowVisible(hwnd) and user32.IsWindowEnabled(hwnd):
+        if user32.IsWindowVisible(hwnd):
             pid = ctypes.c_ulong()
             user32.GetWindowThreadProcessId(hwnd, ctypes.byref(pid))
-            if pid.value == target_pid:
+            if pid.value in all_target_pids:
                 length = user32.GetWindowTextLengthW(hwnd)
                 if length > 0:
                     buffer = ctypes.create_unicode_buffer(length + 1)
                     user32.GetWindowTextW(hwnd, buffer, length + 1)
-                    found_title[0] = buffer.value
-                    return False  # Stop enumeration
+                    title = buffer.value.strip()
+                    # Skip common filler/generic titles
+                    if title and title.lower() not in ["unknown", "default", "window", "overlay"]:
+                        found_title[0] = title
+                        return False # Stop enumeration
         return True
 
     user32.EnumWindows(WNDENUMPROC(callback), 0)
-    return found_title[0] if found_title[0] else "Unknown"
+
+    # If specifically "Unknown" or None, use the fallback_title
+    if not found_title[0] or found_title[0].lower() == "unknown":
+        return fallback_title
+
+    return found_title[0]
 
 def add_to_startup():
     if not getattr(sys, 'frozen', False):
@@ -162,12 +181,26 @@ class UniversalRPC:
             for name in target_names:
                 app_map[name.lower()] = app
 
-        # Single pass through all active processes
+        # First pass: see if any target app is running
         for proc in psutil.process_iter(['name']):
             try:
                 pname = proc.info.get('name')
                 if pname and pname.lower() in app_map:
-                    return app_map[pname.lower()], proc.pid
+                    target_app = app_map[pname.lower()]
+
+                    # Collect ALL PIDs matching this app's process names
+                    target_names = target_app.get('process_name', [])
+                    if isinstance(target_names, str): target_names = [target_names]
+                    target_names_lower = [n.lower() for n in target_names]
+
+                    all_pids = []
+                    for p in psutil.process_iter(['name']):
+                        try:
+                            if p.info['name'] and p.info['name'].lower() in target_names_lower:
+                                all_pids.append(p.pid)
+                        except: continue
+
+                    return target_app, all_pids
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                 continue
         return None, None
@@ -176,7 +209,7 @@ class UniversalRPC:
         log_debug("Universal Discord RPC is running in background...")
         while self.running:
             try:
-                app, pid = self.find_target_process()
+                app, pids = self.find_target_process()
 
                 if app:
                     client_id = app['client_id']
@@ -185,7 +218,7 @@ class UniversalRPC:
                             try: self.active_rpc.close()
                             except: pass
 
-                        log_debug(f"Target found: {app['name']} (PID: {pid}). Connecting RPC...")
+                        log_debug(f"Target found: {app['name']}. Connecting RPC...")
 
                         discord_running = any(p.info['name'].lower() == "discord.exe" for p in psutil.process_iter(['name']))
                         if not discord_running:
@@ -204,10 +237,23 @@ class UniversalRPC:
                             time.sleep(10)
                             continue
 
-                    window_title = get_window_title_from_pid(pid)
-                    details = app.get('details_format', '{window_title}').replace('{window_title}', window_title)
+                    window_title = get_window_title_from_pids(pids, fallback_title=app.get('name', 'Unknown App'))
+
+                    # Prepare formatting variables
+                    fmt_vars = {
+                        'window_title': window_title,
+                        'app_name': app.get('name', 'Unknown App'),
+                        'process_name': psutil.Process(pids[0]).name() if pids and psutil.pid_exists(pids[0]) else 'Unknown'
+                    }
+
+                    details = app.get('details_format', '{window_title}')
                     state = app.get('state_format', 'Running')
                     large_image = app.get('large_image')
+
+                    # Safely format using our custom list of variables
+                    for key, val in fmt_vars.items():
+                        details = details.replace(f'{{{key}}}', str(val))
+                        state = state.replace(f'{{{key}}}', str(val))
 
                     try:
                         self.active_rpc.update(
@@ -245,7 +291,7 @@ def setup_tray(rpc_obj):
     try:
         # Try to find icon in bundled resources first, then locally
         icon_path = get_resource_path("icon.ico")
-        
+
         if not os.path.exists(icon_path):
             # Fallback to local path if not in bundle
             icon_path = os.path.join(get_base_path(), "icon.ico")
