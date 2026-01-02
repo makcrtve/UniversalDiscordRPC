@@ -10,6 +10,7 @@ from datetime import datetime
 import threading
 import pystray
 from PIL import Image
+import media_helper
 
 # Win32 API setup for window title detection and singleton check
 user32 = ctypes.windll.user32
@@ -206,7 +207,11 @@ class UniversalRPC:
                                 all_pids.append(p.pid)
                         except: continue
 
-                    return target_app, all_pids
+                    if all_pids:
+                        # NEW: Check if this app has at least one visible window (active in taskbar)
+                        visibility_marker = "---HIDDEN---"
+                        if get_window_title_from_pids(all_pids, visibility_marker) != visibility_marker:
+                            return target_app, all_pids
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                 continue
         # Second pass: Generic Fallback (if enabled)
@@ -224,17 +229,22 @@ class UniversalRPC:
                         # Check exclusion list
                         exclusions = [e.lower() for e in master.get('exclude_processes', [])]
                         if pname.lower() not in exclusions:
-                            # Dynamic image selection: Check image_map first, then fallback to global large_image
+                            # Dynamic image & format selection
                             image_map = master.get('image_map', {})
+                            details_map = master.get('details_map', {})
+                            state_map = master.get('state_map', {})
+
                             large_image = image_map.get(pname, image_map.get(pname.lower(), master.get('large_image')))
+                            details_format = details_map.get(pname, details_map.get(pname.lower(), master.get('details_format', 'Working on: {app_name}')))
+                            state_format = state_map.get(pname, state_map.get(pname.lower(), master.get('state_format', '{window_title}')))
 
                             # Create a virtual app entry
                             virtual_app = {
                                 'name': pname.replace('.exe', '').capitalize(),
                                 'client_id': master.get('client_id'),
                                 'large_image': large_image,
-                                'details_format': master.get('details_format', 'Working on: {app_name}'),
-                                'state_format': master.get('state_format', '{window_title}'),
+                                'details_format': details_format,
+                                'state_format': state_format,
                                 'is_generic': True
                             }
                             return virtual_app, [pid.value]
@@ -251,20 +261,18 @@ class UniversalRPC:
                 app, pids = self.find_target_process()
 
                 # Smart Sticky logic:
-                # If no NEW app is focused (e.g., focused on desktop/explorer),
-                # check if the LAST app is still actually running.
+                # If no app found (e.g., on Desktop/Explorer), keep the LAST app
+                # UNTIL that app's window is closed or minimized to tray.
                 if not app:
                     if self.active_rpc and self.last_detected_app and self.last_detected_pids:
-                        # Check if at least one of the previous PIDs still exists in the system
-                        still_alive = any(psutil.pid_exists(pid) for pid in self.last_detected_pids)
-                        if still_alive:
+                        visibility_marker = "---HIDDEN---"
+                        if get_window_title_from_pids(self.last_detected_pids, visibility_marker) != visibility_marker:
                             app = self.last_detected_app
                             pids = self.last_detected_pids
                         else:
                             self.last_detected_app = None
                             self.last_detected_pids = None
                 else:
-                    # New app detected, update history
                     self.last_detected_app = app
                     self.last_detected_pids = pids
 
@@ -300,8 +308,20 @@ class UniversalRPC:
                     fmt_vars = {
                         'window_title': window_title,
                         'app_name': app.get('name', 'Unknown App'),
-                        'process_name': psutil.Process(pids[0]).name() if pids and psutil.pid_exists(pids[0]) else 'Unknown'
+                        'process_name': psutil.Process(pids[0]).name() if pids and psutil.pid_exists(pids[0]) else 'Unknown',
+                        'artist': '-',
+                        'title': window_title,
+                        'file_ext': '-'
                     }
+
+                    # Media Metadata Support (No Upload)
+                    # Search for media file metadata if this app is a media player
+                    media_file = media_helper.get_playing_file(pids)
+                    if media_file:
+                        m_info = media_helper.get_media_info(media_file)
+                        if m_info.get('artist'): fmt_vars['artist'] = m_info['artist']
+                        if m_info.get('title'): fmt_vars['title'] = m_info['title']
+                        if m_info.get('file_ext'): fmt_vars['file_ext'] = m_info['file_ext']
 
                     details = app.get('details_format', '{window_title}')
                     state = app.get('state_format', 'Running')

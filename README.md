@@ -1,38 +1,33 @@
-# Universal Discord RPC (Stealth Mode)
-Sebuah generator Discord Rich Presence (RPC) yang ringan dan dapat dikustomisasi sepenuhnya. Aplikasi ini berjalan secara otomatis di latar belakang untuk berbagai software, termasuk FL Studio, Ableton Live, CapCut, dan lainnya.
+# Universal Discord RPC (v1.5)
+Sebuah generator Discord Rich Presence (RPC) yang ringan, cepat, dan otomatis. Aplikasi ini berjalan di latar belakang untuk mendeteksi berbagai software secara cerdas, memberikan status Discord yang elegan dan profesional.
 ## ✨ Fitur Utama
-- **Generic Fallback Mode**: Mendeteksi software secara otomatis meski tidak terdaftar di konfigurasi.
-- **Smart Sticky Presence**: Status tetap aktif selama aplikasi berjalan, meskipun Anda sedang membuka Desktop atau Explorer (mencegah kedap-kedip).
-- **Dynamic Icon Mapping**: Logo spesifik (seperti Brave, Chrome, Photoshop) tetap muncul menggunakan satu Master Application ID.
-- **Integrasi System Tray**: Berjalan di area notifikasi dengan menu Exit yang mudah diakses.
-- **Exclusion List**: Cerdas mengabaikan proses sistem agar status Discord tetap akurat.
-- **Auto-Startup & Auto-Reload**: Sangat praktis, sekali pasang langsung jalan selamanya.
+- **Generic Fallback Mode**: Deteksi software otomatis melalui Master Application ID (UDRPC by geet).
+- **Local Media Metadata (Privacy First)**: Menampilkan Artis, Judul Lagu, dan Format File (FLAC/MP3) dari VLC, AIMP, dan foobar2000 tanpa upload data ke internet.
+- **Smart Sticky Presence**: Status tetap melengket selama aplikasi ada di Taskbar. Tidak akan hilang saat Anda klik Desktop atau Explorer.
+- **Dynamic Icon Mapping**: Logo spesifik (Brave, Chrome, Photoshop, dll) tetap muncul meski menggunakan satu Client ID pusat.
+- **Integrasi System Tray**: Berjalan senyap di area notifikasi dengan menu kontrol yang simpel.
+- **Optimasi Build & Size**: Dilengkapi Progress Bar di build script dan dukungan kompresi UPX untuk file EXE yang lebih ringan (~8MB).
 ## 🚀 Cara Instalasi
 ### Opsi 1: Download File Siap Pakai (Rekomendasi)
 1. Kunjungi halaman [Releases](https://github.com/makcrtve/UniversalDiscordRPC/releases).
-2. Unduh file `UDRPC_v1.4_Release.zip` versi terbaru.
+2. Unduh file `UDRPC_v1.5_Release.zip`.
 3. Ekstrak dan jalankan `UniversalDiscordRPC.exe`.
 ### Opsi 2: Build Sendiri (Developer)
-1. Unduh source code dan jalankan `build.bat`. Script akan mengurus segalanya mulai dari instalasi library hingga pembuatan paket ZIP rilis.
+1. Pastikan Python terinstal.
+2. Jalankan `build.bat`. Script akan mengurus instalasi library, kompresi, hingga pembuatan ZIP secara otomatis dengan progress bar.
 ## 🤝 Berkontribusi & Request
-Jika ada software favorit Anda yang logo atau statusnya ingin dibuat lebih spesifik, silakan ajukan melalui [Software Request Template](https://github.com/makcrtve/UniversalDiscordRPC/issues/new/choose).
+Ingin software favorit Anda punya logo atau status khusus? Silakan ajukan melalui [Software Request Template](https://github.com/makcrtve/UniversalDiscordRPC/issues/new/choose).
 ## ⚙️ Konfigurasi
-Anda dapat menambahkan software yang ingin dideteksi dengan mengedit file `config.json`. 
-Aplikasi ini mendukung variabel dinamis seperti:
-- `{window_title}`: Menampilkan judul jendela/projek aktif.
-- `{app_name}`: Menampilkan nama aplikasi yang diatur di konfigurasi.
-- `{process_name}`: Menampilkan nama file `.exe` yang terdeteksi.
-*Panduan lengkap pengisian variabel sudah tersedia di dalam file `config.json`.*
-## 🛠️ Penggunaan & Kontrol
-- **Mematikan Aplikasi**: Klik kanan ikon **Universal Discord RPC** di System Tray dan pilih **Exit**.
-- **Auto-Startup**: Jalankan `install.bat` di dalam folder rilis untuk mendaftarkan aplikasi ke Windows Startup.
-- **Troubleshooting**: Jika terjadi kendala, silakan periksa file `debug.log` yang ada di folder aplikasi.
-## 📦 Dependensi
-- `pypresence`
-- `psutil`
-- `pystray`
-- `Pillow`
-- `pyinstaller` (untuk proses build)
+Edit file `config.json` untuk kustomisasi penuh. Variabel yang didukung:
+- `{window_title}`: Judul jendela aktif.
+- `{app_name}`: Nama aplikasi dari konfigurasi.
+- `{artist}`: Nama penyanyi (Khusus Media Player).
+- `{title}`: Judul lagu asli (Khusus Media Player).
+- `{file_ext}`: Format file musik (Khusus Media Player).
+## 🛠️ Kontrol & Tips
+- **Auto-Startup**: Jalankan `install.bat` untuk mendaftarkan aplikasi agar jalan otomatis saat Windows menyala.
+- **Manual Exit**: Klik kanan ikon di System Tray dan pilih **Exit**.
+- **Build Ringan**: Letakkan [upx.exe](https://github.com/upx/upx/releases) di folder root sebelum menjalankan `build.bat` untuk mendapatkan ukuran EXE terkecil.
 
 ---
-*Dibuat dengan ❤️ untuk para kreator oleh **makcrtve**.*
+*Dibuat dengan ❤️ oleh **makcrtve** untuk komunitas kreator.*

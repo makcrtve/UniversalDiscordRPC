@@ -1,6 +1,6 @@
-pypresence
 psutil
-pyinstaller
+pypresence
 pystray
 Pillow
-
+pyinstaller
+mutagen

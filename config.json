@@ -1,14 +1,17 @@
 {
   "_bantuan": [
     "--- INSTRUKSI PENGGUNAAN ---",
-    "polling_interval: Berapa detik sekali aplikasi mengecek software (default: 5).",
-    "apps: Daftar aplikasi (FL Studio, dll) yang punya client_id sendiri-sendiri.",
-    "master_config: Konfigurasi untuk mode otomatis (Generic Mode).",
-    "  - enabled: Aktifkan mode otomatis untuk software apa saja (true/false).",
-    "  - client_id: ID Master App (UDRPC by geet).",
-    "  - large_image: Ikon default jika software tidak ada di image_map.",
-    "  - image_map: Mapping {'file.exe': 'nama_asset_discord'} untuk logo spesifik.",
-    "  - exclude_processes: Daftar program sistem yang diabaikan.",
+    "Variabel yang didukung (bisa dipakai di any format):",
+    "  - {window_title}: Judul jendela aplikasi.",
+    "  - {app_name}: Nama aplikasi (dari config).",
+    "  - {process_name}: Nama file .exe.",
+    "  - {artist}: Nama penyanyi (khusus Media Player).",
+    "  - {title}: Judul lagu dari file (khusus Media Player).",
+    "  - {file_ext}: Format file, misal: FLAC (khusus Media Player).",
+    "master_config: Mode otomatis (Generic Mode/UDRPC by geet).",
+    "  - image_map: {'file.exe': 'nama_asset_discord'}.",
+    "  - details_map: {'file.exe': 'Format Baris 1'}.",
+    "  - state_map: {'file.exe': 'Format Baris 2'}.",
     "---------------------------"
   ],
   "polling_interval": 5,
@@ -42,7 +45,7 @@
       "process_name": ["CapCut.exe"],
       "client_id": "1456598592063279379",
       "large_image": "capcutlogo",
-      "details_format": "Producing: {window_title}",
+      "details_format": "Editing: {window_title}",
       "state_format": "Cooking..."
     }
   ],
@@ -66,7 +69,20 @@
       "WINWORD.EXE": "word-logo",
       "EXCEL.EXE": "excel-logo",
       "POWERPNT.EXE": "powerpoint-logo",
-      "Affinity.exe": "affinity-logo"
+      "Affinity.exe": "affinity-logo",
+      "cursor.exe": "cursor-logo",
+      "AIMP.exe": "aimp-logo",
+      "foobar2000.exe": "foobar-logo"
+    },
+    "details_map": {
+      "vlc.exe": "Playing: {title}",
+      "AIMP.exe": "Playing: {title}",
+      "foobar2000.exe": "Playing: {title}"
+    },
+    "state_map": {
+      "vlc.exe": "{artist} [{file_ext}]",
+      "AIMP.exe": "{artist} [{file_ext}]",
+      "foobar2000.exe": "{artist} [{file_ext}]"
     },
     "details_format": "Working on: {app_name}",
     "state_format": "{window_title}",
@@ -84,7 +100,12 @@
       "Spotify.exe",
       "Code.exe",
       "Antigravity.exe",
-      "Brave.exe"
+      "Brave.exe",
+      "voicemeeterpro_x64.exe",
+      "voicemeeterpro.exe",
+      "voicemeeter_x64.exe",
+      "voicemeeter.exe",
+      "Notepad.exe"
     ]
   }
 }
