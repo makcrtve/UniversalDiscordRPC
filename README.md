@@ -1,8 +1,8 @@
 # Universal Discord RPC (Stealth Mode)
 
-![Version](https://img.shields.io/badge/version-1.4-blue)
+![Version](https://img.shields.io/badge/version-1.2-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows-lightgrey)
-![License](https://img.shields.io/github/license/makcrtve/UniversalDiscordRPC)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-green.svg)](LICENSE)
 ![Stars](https://img.shields.io/github/stars/makcrtve/UniversalDiscordRPC?style=social)
 
 Sebuah generator Discord Rich Presence (RPC) yang ringan dan dapat dikustomisasi sepenuhnya. Aplikasi ini berjalan secara otomatis di latar belakang untuk berbagai software, termasuk FL Studio, Ableton Live, CapCut, dan lainnya.
