@@ -1,4 +1,5 @@
 import os
+import re
 import time
 import json
 import psutil
@@ -10,6 +11,7 @@ from datetime import datetime
 import threading
 import pystray
 from PIL import Image
+from typing import Optional, Tuple, List, Dict, Any, Set
 
 # Win32 API setup for window title detection and singleton check
 user32 = ctypes.windll.user32
@@ -26,39 +28,39 @@ def get_resource_path(relative_path):
         return os.path.join(sys._MEIPASS, relative_path)
     return os.path.join(get_base_path(), relative_path)
 
-def log_debug(message):
+def log_debug(message: str) -> None:
+    """Log debug messages to file and console."""
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     log_file = os.path.join(get_base_path(), "debug.log")
     try:
-        with open(log_file, "a") as f:
+        with open(log_file, "a", encoding="utf-8") as f:
             f.write(f"[{timestamp}] {message}\n")
-    except:
-        pass
+    except (IOError, OSError) as e:
+        print(f"Failed to write log: {e}")
     print(message)
 
-def is_already_running():
-    # Simple singleton check using a named mutex
-    # This prevents multiple instances from running at the same time
+def is_already_running() -> bool:
+    """Simple singleton check using a named mutex."""
     mutex_name = "Global\\UniversalDiscordRPC_Mutex"
     kernel32.CreateMutexW(None, False, mutex_name)
     if kernel32.GetLastError() == 183:  # ERROR_ALREADY_EXISTS
         return True
     return False
 
-def get_window_title_from_pids(target_pids, fallback_title="Unknown"):
-    """ Searches for a window title across a set of PIDs and their children. """
+def get_window_title_from_pids(target_pids: Set[int], fallback_title: str = "Unknown") -> str:
+    """Searches for a window title across a set of PIDs and their children."""
     WNDENUMPROC = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.c_void_p, ctypes.c_void_p)
-    found_title = [None]
+    found_title: List[Optional[str]] = [None]
 
     # Expand the set of PIDs to include all children
-    all_target_pids = set(target_pids)
+    all_target_pids: Set[int] = set(target_pids)
     for tpid in target_pids:
         try:
             process = psutil.Process(tpid)
             for child in process.children(recursive=True):
                 all_target_pids.add(child.pid)
-        except:
-            pass
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            continue
 
     def callback(hwnd, lparam):
         if user32.IsWindowVisible(hwnd):
@@ -84,31 +86,46 @@ def get_window_title_from_pids(target_pids, fallback_title="Unknown"):
 
     return found_title[0]
 
-def add_to_startup():
+def sanitize_path(path: str) -> str:
+    """Sanitize file path for use in VBS script to prevent injection."""
+    # Escape double quotes and remove potentially dangerous characters
+    sanitized = path.replace('"', '""')
+    # Remove characters that could break VBS string context
+    sanitized = re.sub(r'[\x00-\x1f]', '', sanitized)
+    return sanitized
+
+
+def add_to_startup() -> bool:
+    """Add application to Windows startup folder."""
     if not getattr(sys, 'frozen', False):
         log_debug("Install only works with compiled .exe version.")
         return False
 
-    exe_path = sys.executable
-    startup_folder = os.path.join(os.getenv('APPDATA'), r'Microsoft\Windows\Start Menu\Programs\Startup')
-    shortcut_path = os.path.join(startup_folder, "UniversalDiscordRPC.lnk")
+    exe_path = sanitize_path(sys.executable)
+    exe_dir = sanitize_path(os.path.dirname(sys.executable))
+    startup_folder = os.path.join(os.getenv('APPDATA', ''), r'Microsoft\Windows\Start Menu\Programs\Startup')
+    shortcut_path = sanitize_path(os.path.join(startup_folder, "UniversalDiscordRPC.lnk"))
 
     # Simple VB script to create a shortcut
     vbs_script = f'''
     Set WShShell = CreateObject("WScript.Shell")
     Set Shortcut = WShShell.CreateShortcut("{shortcut_path}")
     Shortcut.TargetPath = "{exe_path}"
-    Shortcut.WorkingDirectory = "{os.path.dirname(exe_path)}"
+    Shortcut.WorkingDirectory = "{exe_dir}"
     Shortcut.Save
     '''
-    vbs_file = os.path.join(os.getenv('TEMP'), "create_shortcut.vbs")
-    with open(vbs_file, 'w') as f:
-        f.write(vbs_script)
+    vbs_file = os.path.join(os.getenv('TEMP', '.'), "create_shortcut.vbs")
+    try:
+        with open(vbs_file, 'w', encoding='utf-8') as f:
+            f.write(vbs_script)
 
-    subprocess.call(['cscript', '//nologo', vbs_file])
-    os.remove(vbs_file)
-    log_debug(f"Successfully added to startup: {shortcut_path}")
-    return True
+        subprocess.call(['cscript', '//nologo', vbs_file])
+        os.remove(vbs_file)
+        log_debug(f"Successfully added to startup: {shortcut_path}")
+        return True
+    except (IOError, OSError, subprocess.SubprocessError) as e:
+        log_debug(f"Failed to add to startup: {e}")
+        return False
 
 class UniversalRPC:
     def __init__(self, config_path):
@@ -127,17 +144,19 @@ class UniversalRPC:
 
         log_debug("RPC Service Initialized.")
 
-    def stop(self):
+    def stop(self) -> None:
+        """Stop the RPC service gracefully."""
         log_debug("Stopping RPC Service...")
         self.running = False
         if self.active_rpc:
             try:
                 self.active_rpc.close()
-            except:
-                pass
+            except Exception as e:
+                log_debug(f"Error closing RPC connection: {e}")
             self.active_rpc = None
 
-    def load_config(self):
+    def load_config(self) -> Dict[str, Any]:
+        """Load configuration from JSON file with fallback paths."""
         # Try primary path first
         paths_to_try = [self.config_path]
 
@@ -149,12 +168,12 @@ class UniversalRPC:
         for path in paths_to_try:
             if os.path.exists(path):
                 try:
-                    with open(path, 'r') as f:
+                    with open(path, 'r', encoding='utf-8') as f:
                         config = json.load(f)
                         log_debug(f"Config loaded from: {path}")
-                        self.config_path = path # Update to the found path
+                        self.config_path = path  # Update to the found path
                         return config
-                except Exception as e:
+                except (json.JSONDecodeError, IOError, OSError) as e:
                     log_debug(f"Error reading {path}: {e}")
 
         log_debug(f"Error: No config.json found in {paths_to_try}")
@@ -175,11 +194,21 @@ class UniversalRPC:
                     self.active_rpc = None
                     self.current_app_id = None
 
-    def find_target_process(self):
+    def _safe_get_process_name(self, pids: Optional[List[int]]) -> str:
+        """Safely get process name from pid list."""
+        if not pids:
+            return 'Unknown'
+        try:
+            return psutil.Process(pids[0]).name()
+        except (psutil.NoSuchProcess, psutil.AccessDenied, IndexError):
+            return 'Unknown'
+
+    def find_target_process(self) -> Tuple[Optional[Dict[str, Any]], Optional[List[int]]]:
+        """Find a target process from the configured app list."""
         self.check_config_reload()
 
         # Build a lookup map for faster matching
-        app_map = {}
+        app_map: Dict[str, Dict[str, Any]] = {}
         for app in self.config.get('apps', []):
             target_names = app.get('process_name', [])
             if isinstance(target_names, str):
@@ -196,15 +225,17 @@ class UniversalRPC:
 
                     # Collect ALL PIDs matching this app's process names
                     target_names = target_app.get('process_name', [])
-                    if isinstance(target_names, str): target_names = [target_names]
+                    if isinstance(target_names, str):
+                        target_names = [target_names]
                     target_names_lower = [n.lower() for n in target_names]
 
-                    all_pids = []
+                    all_pids: List[int] = []
                     for p in psutil.process_iter(['name']):
                         try:
                             if p.info['name'] and p.info['name'].lower() in target_names_lower:
                                 all_pids.append(p.pid)
-                        except: continue
+                        except (psutil.NoSuchProcess, psutil.AccessDenied):
+                            continue
 
                     return target_app, all_pids
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
@@ -244,7 +275,8 @@ class UniversalRPC:
 
         return None, None
 
-    def run(self):
+    def run(self) -> None:
+        """Main loop for RPC service."""
         log_debug("Universal Discord RPC is running in background...")
         while self.running:
             try:
@@ -272,12 +304,17 @@ class UniversalRPC:
                     client_id = app['client_id']
                     if self.current_app_id != client_id:
                         if self.active_rpc:
-                            try: self.active_rpc.close()
-                            except: pass
+                            try:
+                                self.active_rpc.close()
+                            except Exception as e:
+                                log_debug(f"Error closing previous RPC: {e}")
 
                         log_debug(f"Target found: {app['name']}. Connecting RPC...")
 
-                        discord_running = any(p.info['name'].lower() == "discord.exe" for p in psutil.process_iter(['name']))
+                        discord_running = any(
+                            p.info['name'].lower() == "discord.exe"
+                            for p in psutil.process_iter(['name'])
+                        )
                         if not discord_running:
                             log_debug("Discord is not running. Waiting...")
                             time.sleep(10)
@@ -294,13 +331,16 @@ class UniversalRPC:
                             time.sleep(10)
                             continue
 
-                    window_title = get_window_title_from_pids(pids, fallback_title=app.get('name', 'Unknown App'))
+                    window_title = get_window_title_from_pids(
+                        set(pids) if pids else set(),
+                        fallback_title=app.get('name', 'Unknown App')
+                    )
 
-                    # Prepare formatting variables
-                    fmt_vars = {
+                    # Prepare formatting variables (using safe method)
+                    fmt_vars: Dict[str, str] = {
                         'window_title': window_title,
                         'app_name': app.get('name', 'Unknown App'),
-                        'process_name': psutil.Process(pids[0]).name() if pids and psutil.pid_exists(pids[0]) else 'Unknown'
+                        'process_name': self._safe_get_process_name(pids)
                     }
 
                     details = app.get('details_format', '{window_title}')
@@ -326,8 +366,10 @@ class UniversalRPC:
                 else:
                     if self.active_rpc:
                         log_debug("Target software closed. Stopping RPC...")
-                        try: self.active_rpc.close()
-                        except: pass
+                        try:
+                            self.active_rpc.close()
+                        except Exception as e:
+                            log_debug(f"Error closing RPC: {e}")
                         self.active_rpc = None
                         self.current_app_id = None
                         self.start_time = None
@@ -336,7 +378,10 @@ class UniversalRPC:
                 log_debug(f"Main loop error: {e}")
 
             # Optimized polling: wait longer if no target app is running
-            interval = self.config.get('polling_interval', 15)
+            # Validate interval to prevent infinite loops or excessive polling
+            MIN_INTERVAL, MAX_INTERVAL = 1, 300
+            raw_interval = self.config.get('polling_interval', 15)
+            interval = max(MIN_INTERVAL, min(MAX_INTERVAL, raw_interval))
             time.sleep(interval if self.current_app_id else interval * 2)
 
 def on_quit(icon, item, rpc_obj):
