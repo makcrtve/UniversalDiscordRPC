@@ -4,26 +4,19 @@
 
 ### _Tampilkan Aktivitasmu di Discord dengan Elegan_
 
-![Version](https://img.shields.io/badge/version-1.2-7289DA?style=for-the-badge&logo=discord&logoColor=white)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-green?style=for-the-badge)](LICENSE)
-![Stars](https://img.shields.io/github/stars/makcrtve/UniversalDiscordRPC?style=for-the-badge&logo=github)
-![Platform](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
-
-
+![Version](https://img.shields.io/badge/version-1.5.1-7289DA?style=for-the-badge&logo=discord&logoColor=white )
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-green?style=for-the-badge )](LICENSE)
+![Stars](https://img.shields.io/github/stars/makcrtve/geetRP?style=for-the-badge&logo=github )
+![Platform](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white )
 
 <br/>
 
 Generator Discord Rich Presence yang **ringan**, **cepat**, dan **sepenuhnya otomatis**.  
 Berjalan senyap di latar belakang untuk menampilkan status profesional dari berbagai aplikasi.
 
-<!-- Uncomment jika sudah ada screenshot
-<br/>
-<img src="screenshots/demo.gif" alt="Demo" width="400"/>
--->
-
 <br/>
 
-[📦 **Download**](https://github.com/makcrtve/UniversalDiscordRPC/releases) · [🐛 **Report Bug**](https://github.com/makcrtve/UniversalDiscordRPC/issues) · [✨ **Request Software**](https://github.com/makcrtve/UniversalDiscordRPC/issues/new/choose)
+[📦 **Download**](https://github.com/makcrtve/geetRP/releases ) · [🐛 **Report Bug**](https://github.com/makcrtve/geetRP/issues ) · [✨ **Request Software**](https://github.com/makcrtve/geetRP/issues/new/choose )
 
 </div>
 
@@ -84,22 +77,24 @@ Sekali setup dengan `install.bat`, aplikasi akan **jalan otomatis** setiap Windo
 
 ```
 1. 📥 Kunjungi halaman Releases
-2. 📁 Unduh file UDRPC_v1.4_Release.zip
-3. ▶️ Ekstrak dan jalankan UniversalDiscordRPC.exe
+2. 📁 Unduh file geetRP-v1.5.1.zip
+3. ▶️ Ekstrak dan jalankan geetRP.exe
 ```
 
 <div align="center">
 
-[![Download Latest](https://img.shields.io/badge/Download-Latest%20Release-7289DA?style=for-the-badge&logo=github)](https://github.com/makcrtve/UniversalDiscordRPC/releases)
+[![Download Latest](https://img.shields.io/badge/Download-Latest%20Release-7289DA?style=for-the-badge&logo=github )](https://github.com/makcrtve/geetRP/releases )
 
 </div>
+
+Catatan v1.5.1: Perbaikan stabilitas—deteksi ganda instance, pemeriksaan keberadaan Discord, serta penanganan metadata musik yang lebih akurat. Tidak perlu menyunting config saat upgrade dari v1.5.0.
 
 ### 🛠️ Opsi 2: Build Sendiri _(Developer)_
 
 ```bash
 # Clone repository
-git clone https://github.com/makcrtve/UniversalDiscordRPC.git
-cd UniversalDiscordRPC
+git clone https://github.com/makcrtve/geetRP.git 
+cd geetRP
 
 # Install dependencies
 pip install -r requirements.txt
@@ -111,7 +106,7 @@ python main.py
 build.bat
 ```
 
-> **💡 Tip:** Letakkan [upx.exe](https://github.com/upx/upx/releases) di folder root sebelum menjalankan `build.bat` untuk mendapatkan ukuran EXE yang lebih kecil.
+> **💡 Tip:** Letakkan [upx.exe](https://github.com/upx/upx/releases ) di folder root sebelum menjalankan `build.bat` untuk mendapatkan ukuran EXE yang lebih kecil.
 
 ---
 
@@ -126,6 +121,9 @@ Edit file `config.json` untuk menambah atau mengkustomisasi software yang ingin 
 | `{window_title}` | `MySong.flp - FL Studio` | Judul jendela/projek aktif       |
 | `{app_name}`     | `FL Studio`              | Nama aplikasi dari config        |
 | `{process_name}` | `FL64.exe`               | Nama file `.exe` yang terdeteksi |
+| `{artist}`       | `Taylor Swift`           | Nama penyanyi (media player)     |
+| `{title}`        | `Cruel Summer`           | Judul lagu (media player)        |
+| `{file_ext}`     | `FLAC`                   | Format file musik                |
 
 ### 📄 Contoh Konfigurasi
 
@@ -136,7 +134,7 @@ Edit file `config.json` untuk menambah atau mengkustomisasi software yang ingin 
     {
       "name": "FL Studio",
       "process_name": ["FL64.exe"],
-      "client_id": "YOUR_DISCORD_APP_ID",
+      "client_id": "1115529334594220116",
       "large_image": "fl-studio-icon",
       "details_format": "Editing: {window_title}",
       "state_format": "Cooking beats 🔥"
@@ -151,7 +149,7 @@ Edit file `config.json` untuk menambah atau mengkustomisasi software yang ingin 
 
 | Aksi                   | Cara                                         |
 | :--------------------- | :------------------------------------------- |
-| ▶️ **Menjalankan**     | Double-click `UniversalDiscordRPC.exe`       |
+| ▶️ **Menjalankan**     | Double-click `geetRP.exe`                    |
 | ⏹️ **Mematikan**       | Klik kanan ikon di System Tray → **Exit**    |
 | 🔄 **Auto-Startup**    | Jalankan `install.bat` sebagai Administrator |
 | 🔍 **Troubleshooting** | Cek file `debug.log` di folder aplikasi      |
@@ -161,7 +159,7 @@ Edit file `config.json` untuk menambah atau mengkustomisasi software yang ingin 
 ## ❓ FAQ
 
 <details>
-<summary><b>🔴 RPC tidak muncul di Discord?</b></summary>
+<summary><b>🔴 Rich Presence tidak muncul di Discord?</b></summary>
 <br/>
 
 **Checklist:**
@@ -170,7 +168,7 @@ Edit file `config.json` untuk menambah atau mengkustomisasi software yang ingin 
 - ✅ Aktifkan **"Display current activity"** di:  
   `Discord Settings` → `Activity Privacy`
 - ✅ Cek `debug.log` untuk melihat error messages
-- ✅ Restart kedua aplikasi (Discord & Universal RPC)
+- ✅ Restart kedua aplikasi (Discord & geetRP)
 
 </details>
 
@@ -182,7 +180,7 @@ Edit file `config.json` untuk menambah atau mengkustomisasi software yang ingin 
 
 1. Jalankan ulang `install.bat` sebagai **Administrator**
 2. Verifikasi di `Task Manager` → Tab `Startup apps`
-3. Pastikan entry "UniversalDiscordRPC" berstatus **Enabled**
+3. Pastikan entry "geetRP" berstatus **Enabled**
 
 </details>
 
@@ -204,7 +202,7 @@ Edit file `config.json` untuk menambah atau mengkustomisasi software yang ingin 
 
 **Langkah:**
 
-1. Buat aplikasi di [Discord Developer Portal](https://discord.com/developers/applications)
+1. Buat aplikasi di [Discord Developer Portal](https://discord.com/developers/applications )
 2. Upload gambar di bagian **Rich Presence** → **Art Assets**
 3. Gunakan nama asset sebagai nilai `large_image` di config
 
@@ -239,27 +237,30 @@ Kontribusi sangat diterima! Berikut caranya:
 ### 🎨 Software Request
 
 Ingin logo atau status khusus untuk software favorit Anda?  
-Ajukan melalui **[Software Request Template](https://github.com/makcrtve/UniversalDiscordRPC/issues/new/choose)**!
+Ajukan melalui **[Software Request Template](https://github.com/makcrtve/geetRP/issues/new/choose )**!
 
 ---
 
 ## 📋 Changelog
 
-### v1.2 `Latest` — _2 Januari 2026_
+### v1.5.1 `Latest` — _3 Januari 2025_
 
 ```diff
-+ ✨ Improved security with path sanitization
-+ 🐛 Fixed potential crash on process detection
-+ 📝 Added type hints for better maintainability
-+ 🔧 Better exception handling throughout
++ ✨ Singleton kuat: cek mutex + proses duplikat
++ 🛡️ Discord gentle detection via registry
++ 🎵 Cache media: pid + title + size + mtime
++ 📂 Tray menu "Open Folder"
++ 🔧 Relative icon path di .spec
++ 📝 Nama output ZIP otomatis v1.5.1
 ```
 
-### v1.1 — _Initial Release_
+### v1.5 — _Previous Release_
 
 ```diff
-+ 🎉 Initial public release
++ 🎉 Initial support for FL Studio, Ableton, CapCut, Office, browsers
++ 🔄 Smart sticky presence
++ 🎨 Dynamic icon mapping
 + 🔔 System tray integration
-+ 🔄 Auto-startup support
 ```
 
 ---
@@ -276,9 +277,8 @@ Distributed under the **GPL v3 License**. See [`LICENSE`](LICENSE) for more info
 
 <br/>
 
-\*Dibuat dengan ❤️ untuk para kreator oleh **[makcrtve](https://github.com/makcrtve)\***
+**Dibuat dengan ❤️ untuk para kreator oleh *[makcrtve](https://github.com/makcrtve)***
 
 <br/>
-
 
 </div>
