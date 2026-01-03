@@ -8,8 +8,10 @@
     "  - {artist}: Nama penyanyi (khusus Media Player).",
     "  - {title}: Judul lagu dari file (khusus Media Player).",
     "  - {file_ext}: Format file, misal: FLAC (khusus Media Player).",
-    "master_config: Mode otomatis (Generic Mode/UDRPC by geet).",
-    "  - image_map: {'file.exe': 'nama_asset_discord'}.",
+    "master_config: Mode otomatis (Generic Mode/geetRPC).",
+    "  - small_image: Ikon kecil default.",
+    "  - small_image_map: {'file.exe': 'nama_asset'} untuk ikon kecil spesifik.",
+    "  - small_text_format: Teks hover pada ikon kecil.",
     "  - details_map: {'file.exe': 'Format Baris 1'}.",
     "  - state_map: {'file.exe': 'Format Baris 2'}.",
     "---------------------------"
@@ -21,7 +23,9 @@
       "process_name": ["FL64.exe"],
       "client_id": "1115529334594220116",
       "large_image": "fl-studio-icon",
-      "details_format": "Producing: {window_title}",
+      "small_image": "verified",
+      "small_text_format": "Verified Producer",
+      "details_format": "{window_title}",
       "state_format": "Cooking..."
     },
     {
@@ -29,7 +33,9 @@
       "process_name": ["Ableton Live 11 Suite.exe", "Ableton Live 11.exe"],
       "client_id": "1043409832117551194",
       "large_image": "live11logo",
-      "details_format": "Producing: {window_title}",
+      "small_image": "verified",
+      "small_text_format": "Verified Producer",
+      "details_format": "{window_title}",
       "state_format": "Cooking..."
     },
     {
@@ -37,7 +43,9 @@
       "process_name": ["Ableton Live 12 Suite.exe", "Ableton Live 12.exe"],
       "client_id": "1184793021217263617",
       "large_image": "live12logo",
-      "details_format": "Producing: {window_title}",
+      "small_image": "verified",
+      "small_text_format": "Verified Producer",
+      "details_format": "{window_title}",
       "state_format": "Cooking..."
     },
     {
@@ -45,7 +53,7 @@
       "process_name": ["CapCut.exe"],
       "client_id": "1456598592063279379",
       "large_image": "capcutlogo",
-      "details_format": "Editing: {window_title}",
+      "details_format": "{window_title}",
       "state_format": "Cooking..."
     }
   ],
@@ -53,6 +61,8 @@
     "enabled": true,
     "client_id": "1456627067968819283",
     "large_image": "udrpc-logo",
+    "small_image": null,
+    "small_text_format": "geetRPC",
     "image_map": {
       "brave.exe": "brave-logo",
       "chrome.exe": "chrome-logo",
@@ -73,6 +83,11 @@
       "cursor.exe": "cursor-logo",
       "AIMP.exe": "aimp-logo",
       "foobar2000.exe": "foobar-logo"
+    },
+    "small_image_map": {
+      "vlc.exe": "music",
+      "AIMP.exe": "music",
+      "foobar2000.exe": "music"
     },
     "details_map": {
       "vlc.exe": "Playing: {title}",
@@ -105,7 +120,8 @@
       "voicemeeterpro.exe",
       "voicemeeter_x64.exe",
       "voicemeeter.exe",
-      "Notepad.exe"
+      "Notepad.exe",
+      "DiscordCanary.exe"
     ]
   }
 }

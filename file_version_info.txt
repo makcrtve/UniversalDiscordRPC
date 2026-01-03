@@ -15,12 +15,12 @@ VSVersionInfo(
       StringTable(
         u'040904B0',
         [StringStruct(u'CompanyName', u'makcrtve'),
-        StringStruct(u'FileDescription', u'Universal Discord RPC Service'),
+        StringStruct(u'FileDescription', u'geetRPC Service'),
         StringStruct(u'FileVersion', u'1.5'),
-        StringStruct(u'InternalName', u'UniversalDiscordRPC'),
+        StringStruct(u'InternalName', u'geetRPC'),
         StringStruct(u'LegalCopyright', u'Copyright (c) 2026 makcrtve'),
-        StringStruct(u'OriginalFilename', u'UniversalDiscordRPC.exe'),
-        StringStruct(u'ProductName', u'Universal Discord RPC'),
+        StringStruct(u'OriginalFilename', u'geetRPC.exe'),
+        StringStruct(u'ProductName', u'geetRPC'),
         StringStruct(u'ProductVersion', u'1.5')])
       ]),
     VarFileInfo([VarStruct(u'Translation', [1033, 1200])])
