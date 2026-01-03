@@ -1,8 +1,8 @@
 @echo off
-set EXE_PATH=%~dp0dist\UniversalDiscordRPC.exe
+set EXE_PATH=%~dp0dist\geetRP.exe
 
 if not exist "%EXE_PATH%" (
-    echo [ERROR] UniversalDiscordRPC.exe tidak ditemukan di folder dist!
+    echo [ERROR] geetRP.exe tidak ditemukan di folder dist!
     echo Silakan jalankan build.bat terlebih dahulu.
     pause
     exit /b

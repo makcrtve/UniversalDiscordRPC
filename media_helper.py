@@ -6,34 +6,28 @@ from mutagen import File as MutagenFile
 MEDIA_EXTENSIONS = ('.mp3', '.flac', '.wav', '.m4a', '.ogg', '.wma', '.aac', '.alac', '.opus')
 
 # Cache for media file paths {pid: (path, last_title)}
-_file_cache = {}
+_file_cache = {}  # {pid: (path, last_title, file_size, mtime)}
 
 def get_playing_file(pids, current_window_title=""):
-    """ Finds a media file currently opened by the given process IDs with track-aware caching. """
     if not pids:
         return None
-
     for pid in pids:
-        # Check cache: Only reuse if title hasn't changed (simple heuristic for track change)
-        if pid in _file_cache:
-            path, last_title = _file_cache[pid]
-            # If window title changed significantly, the file might have changed
-            # We refresh if the current title doesn't contain the old one or vice-versa
-            # Or simpler: if it's a media player, we just re-scan if the title changed at all
-            if current_window_title == last_title and os.path.exists(path):
-                return path
-
         try:
             proc = psutil.Process(pid)
-            # Expensive call: we only do this when title changes or cache is empty
             for f in proc.open_files():
                 if f.path.lower().endswith(MEDIA_EXTENSIONS):
-                    _file_cache[pid] = (f.path, current_window_title)
+                    # Hitung key unik
+                    st = os.stat(f.path)
+                    cache_key = (pid, current_window_title, st.st_size, int(st.st_mtime))
+                    cached = _file_cache.get(pid)
+                    if cached and cached[:4] == cache_key:
+                        return cached[4]  # return path
+                    # Update cache
+                    _file_cache[pid] = cache_key + (f.path,)
                     return f.path
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             _file_cache.pop(pid, None)
             continue
-
     return None
 
 def get_media_info(file_path):

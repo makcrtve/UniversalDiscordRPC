@@ -36,5 +36,5 @@ exe = EXE(
     codesign_identity=None,
     entitlements_file=None,
     version='file_version_info.txt',
-    icon=['D:\\Project\\Visual Studio Code\\universal-discord-rpc\\icon.ico'],
+    icon=['D:\\Project\\Visual Studio Code\\geetRP\\icon.ico'],
 )

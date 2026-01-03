@@ -85,6 +85,7 @@ set "PROGRESS=95"
 set "STAGE=Membuat paket ZIP Rilis..."
 set "BAR=###################-"
 call :draw_bar
+set "VERSION=1.5.1"
 powershell -Command "Compress-Archive -Path 'dist\geetRP.exe', 'config.json', 'README.md' -DestinationPath 'geetRP-%VERSION%.zip' -Force"
 
 :: --- Step 6: Done ---
@@ -93,8 +94,8 @@ set "STAGE=Selesai! Build Berhasil."
 set "BAR=####################"
 call :draw_bar
 
-echo Lokasi EXE:   \dist\UniversalDiscordRPC.exe
-echo Lokasi Rilis: \UDRPC_v1.5_Release.zip
+echo Lokasi EXE:   \dist\geetRP.exe
+echo Lokasi Rilis: \geetRP-v1.5.zip
 echo.
 if not exist upx.exe (
     where upx >nul 2>&1

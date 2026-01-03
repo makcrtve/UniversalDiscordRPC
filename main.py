@@ -12,6 +12,7 @@ import pystray
 from PIL import Image
 import media_helper
 import gc
+import winreg
 
 # Win32 API setup for window title detection and singleton check
 user32 = ctypes.windll.user32
@@ -39,13 +40,28 @@ def log_debug(message):
     print(message)
 
 def is_already_running():
-    # Simple singleton check using a named mutex
-    # This prevents multiple instances from running at the same time
-    mutex_name = "Global\\geetRP_Mutex"
+    # 1. Mutex tetap dipakai untuk instance lokal
+    mutex_name = "Global\\geetRP_Mutex_v15"
     kernel32.CreateMutexW(None, False, mutex_name)
     if kernel32.GetLastError() == 183:  # ERROR_ALREADY_EXISTS
         return True
+
+    # 2. Cek proses lain dengan nama EXE yang sama
+    own_exe = os.path.basename(sys.executable).lower()
+    for proc in psutil.process_iter(['pid', 'name', 'exe']):
+        try:
+            if proc.info['name'].lower() == own_exe and proc.info['exe'] != sys.executable:
+                return True
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            continue
     return False
+
+def is_discord_installed():
+    try:
+        winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Discord").Close()
+        return True
+    except FileNotFoundError:
+        return False
 
 def get_window_title_from_pids(target_pids, fallback_title="Unknown"):
     """ Searches for a window title across a set of PIDs. Optimizes CPU by lazy-scanning children. """
@@ -104,7 +120,7 @@ def add_to_startup():
 
     exe_path = sys.executable
     startup_folder = os.path.join(os.getenv('APPDATA'), r'Microsoft\Windows\Start Menu\Programs\Startup')
-    shortcut_path = os.path.join(startup_folder, "UniversalDiscordRPC.lnk")
+    shortcut_path = os.path.join(startup_folder, "geetRP.lnk")
 
     # Simple VB script to create a shortcut
     vbs_script = f'''
@@ -123,7 +139,7 @@ def add_to_startup():
     log_debug(f"Successfully added to startup: {shortcut_path}")
     return True
 
-class UniversalRPC:
+class geetRPC:
     def __init__(self, config_path):
         self.config_path = config_path
         self.config = self.load_config()
@@ -289,10 +305,19 @@ class UniversalRPC:
         return None, None
 
     def run(self):
-        log_debug("Universal Discord RPC is running in background...")
+        if not self.current_app_id:
+            sys.setswitchinterval(0.5)  # idle mode
+        else:
+            sys.setswitchinterval(0.005)  # active mode
+        log_debug("geetRPC is running in background...")
         while self.running:
             try:
                 app, pids = self.find_target_process()
+
+                if not is_discord_installed():
+                    log_debug("Discord not installed – skipping connect")
+                    time.sleep(30)  # tunggu lebih lama
+                    continue
 
                 # Smart Sticky logic:
                 # If no app found (e.g., on Desktop/Explorer), keep the LAST app
@@ -404,34 +429,35 @@ def on_quit(icon, item, rpc_obj):
     rpc_obj.stop()
     icon.stop()
 
+def on_open_folder(icon, item):
+    os.startfile(get_base_path())
+
+menu = pystray.Menu(
+    pystray.MenuItem("geetRP", lambda: None, enabled=False),
+    pystray.MenuItem("Open Folder", on_open_folder),
+    pystray.MenuItem("Exit", lambda icon, item: on_quit(icon, item, rpc_obj))
+)
+
 def setup_tray(rpc_obj):
     try:
-        # Try to find icon in bundled resources first, then locally
         icon_path = get_resource_path("icon.ico")
-
         if not os.path.exists(icon_path):
-            # Fallback to local path if not in bundle
             icon_path = os.path.join(get_base_path(), "icon.ico")
 
         log_debug(f"Loading tray icon from: {icon_path}")
-        if os.path.exists(icon_path):
-            image = Image.open(icon_path)
-        else:
-            log_debug("Icon not found, using fallback colored square.")
-            image = Image.new('RGB', (64, 64), color=(114, 137, 218))
+        image = Image.open(icon_path) if os.path.exists(icon_path) else Image.new('RGB', (64, 64), color=(114, 137, 218))
 
+        # ── satu menu yang benar ──
         menu = pystray.Menu(
-            pystray.MenuItem("Universal Discord RPC", lambda: None, enabled=False),
+            pystray.MenuItem("geetRP", lambda: None, enabled=False),
+            pystray.MenuItem("Open Folder", lambda: os.startfile(get_base_path())),
             pystray.MenuItem("Exit", lambda icon, item: on_quit(icon, item, rpc_obj))
         )
 
-        icon = pystray.Icon("UniversalDiscordRPC", image, "Universal Discord RPC", menu)
+        icon = pystray.Icon("geetRP", image, "geetRP", menu)
         icon.run()
     except Exception as e:
         log_debug(f"Tray initialization error: {e}")
-        # If tray fails, we still want the RPC to run if possible,
-        # but since this is the main thread, it might exit anyway.
-        # We'll just keep the main thread alive if we can.
         while rpc_obj.running:
             time.sleep(1)
 
@@ -444,7 +470,7 @@ if __name__ == "__main__":
         sys.exit(0)
 
     config_file = os.path.join(get_base_path(), 'config.json')
-    rpc = UniversalRPC(config_file)
+    rpc = geetRPC(config_file)
 
     # Run RPC logic in a separate thread
     rpc_thread = threading.Thread(target=rpc.run, daemon=True)
