@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🎮 geetRP
+# geetRP
 
 ### _Tampilkan Aktivitasmu di Discord dengan Elegan_
 
@@ -227,11 +227,11 @@ pyinstaller   # Build executable
 Kontribusi sangat diterima! Berikut caranya:
 
 ```
-1. 🍴 Fork repository ini
-2. 🌿 Buat branch fitur  →  git checkout -b feature/AmazingFeature
-3. 💾 Commit perubahan   →  git commit -m "Add AmazingFeature"
-4. 📤 Push ke branch     →  git push origin feature/AmazingFeature
-5. 🔄 Buat Pull Request
+1. Fork repository ini
+2. Buat branch fitur  →  git checkout -b feature/AmazingFeature
+3. Commit perubahan   →  git commit -m "Add AmazingFeature"
+4. Push ke branch     →  git push origin feature/AmazingFeature
+5. Buat Pull Request
 ```
 
 ### 🎨 Software Request
@@ -282,3 +282,4 @@ Distributed under the **GPL v3 License**. See [`LICENSE`](LICENSE) for more info
 <br/>
 
 </div>
+
