@@ -6,8 +6,9 @@
 
 ![Version](https://img.shields.io/badge/version-1.5.1-7289DA?style=for-the-badge&logo=discord&logoColor=white )
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-green?style=for-the-badge )](LICENSE)
-![Stars](https://img.shields.io/github/stars/makcrtve/geetRP?style=for-the-badge&logo=github )
+![GitHub Repo stars](https://img.shields.io/github/stars/makcrtve/geetRP?style=for-the-badge)
 ![Platform](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white )
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/makcrtve/geetRP/total?style=for-the-badge)
 
 <br/>
 
