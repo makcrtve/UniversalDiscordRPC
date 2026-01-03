@@ -41,7 +41,7 @@ def log_debug(message):
 def is_already_running():
     # Simple singleton check using a named mutex
     # This prevents multiple instances from running at the same time
-    mutex_name = "Global\\geetRPC_Mutex"
+    mutex_name = "Global\\geetRP_Mutex"
     kernel32.CreateMutexW(None, False, mutex_name)
     if kernel32.GetLastError() == 183:  # ERROR_ALREADY_EXISTS
         return True
@@ -143,7 +143,7 @@ class UniversalRPC:
         self.target_names_set = set()
         self._rebuild_maps()
 
-        log_debug("geetRPC Service Initialized.")
+        log_debug("geetRP Service Initialized.")
 
     def _rebuild_maps(self):
         """ Rebuilds lookup maps for target detection. """

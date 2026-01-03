@@ -1,8 +1,8 @@
-# geetRPC (v1.5)
-Sebuah generator Discord Rich Presence (RPC) yang ringan, cepat, dan otomatis. **geetRPC** berjalan di latar belakang untuk mendeteksi berbagai software secara cerdas, memberikan status Discord yang elegan dan profesional.
+# geetRP (v1.5)
+Sebuah generator Discord Rich Presence (RPC) yang ringan, cepat, dan otomatis. **geetRP** berjalan di latar belakang untuk mendeteksi berbagai software secara cerdas, memberikan status Discord yang elegan dan profesional.
 
 ## ✨ Fitur Utama
-- **Generic Fallback Mode**: Deteksi software otomatis melalui Master Application ID (**geetRPC**).
+- **Generic Fallback Mode**: Deteksi software otomatis melalui Master Application ID (**geetRP**).
 - **Local Media Metadata (Privacy First)**: Menampilkan Artis, Judul Lagu, dan Format File (FLAC/MP3) dari VLC, AIMP, dan foobar2000 tanpa upload data ke internet.
 - **Smart Sticky Presence**: Status tetap melengket selama aplikasi ada di Taskbar. Tidak akan hilang saat Anda klik Desktop atau Explorer.
 - **Dynamic Icon Mapping**: Logo spesifik (Brave, Chrome, Photoshop, dll) tetap muncul meski menggunakan satu Client ID pusat.
@@ -11,16 +11,16 @@ Sebuah generator Discord Rich Presence (RPC) yang ringan, cepat, dan otomatis. *
 
 ## 🚀 Cara Instalasi
 ### Opsi 1: Download File Siap Pakai (Rekomendasi)
-1. Kunjungi halaman [Releases](https://github.com/makcrtve/geetRPC/releases).
-2. Unduh file `geetRPC-v1.5.zip`.
-3. Ekstrak dan jalankan `geetRPC.exe`.
+1. Kunjungi halaman [Releases](https://github.com/makcrtve/geetRP/releases).
+2. Unduh file `geetRP-v1.5.zip`.
+3. Ekstrak dan jalankan `geetRP.exe`.
 
 ### Opsi 2: Build Sendiri (Developer)
 1. Pastikan Python terinstal.
 2. Jalankan `build.bat`. Script akan mengurus instalasi library, kompresi, hingga pembuatan ZIP secara otomatis dengan progress bar.
 
 ## 🤝 Berkontribusi & Request
-Ingin software favorit Anda punya logo atau status khusus? Silakan ajukan melalui [Software Request Template](https://github.com/makcrtve/geetRPC/issues/new/choose).
+Ingin software favorit Anda punya logo atau status khusus? Silakan ajukan melalui [Software Request Template](https://github.com/makcrtve/geetRP/issues/new/choose).
 
 ## ⚙️ Konfigurasi
 Edit file `config.json` untuk kustomisasi penuh. Variabel yang didukung:

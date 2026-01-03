@@ -8,7 +8,7 @@
     "  - {artist}: Nama penyanyi (khusus Media Player).",
     "  - {title}: Judul lagu dari file (khusus Media Player).",
     "  - {file_ext}: Format file, misal: FLAC (khusus Media Player).",
-    "master_config: Mode otomatis (Generic Mode/geetRPC).",
+    "master_config: Mode otomatis (Generic Mode/geetRP).",
     "  - small_image: Ikon kecil default.",
     "  - small_image_map: {'file.exe': 'nama_asset'} untuk ikon kecil spesifik.",
     "  - small_text_format: Teks hover pada ikon kecil.",
@@ -62,7 +62,7 @@
     "client_id": "1456627067968819283",
     "large_image": "udrpc-logo",
     "small_image": null,
-    "small_text_format": "geetRPC",
+    "small_text_format": "geetRP",
     "image_map": {
       "brave.exe": "brave-logo",
       "chrome.exe": "chrome-logo",

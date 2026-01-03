@@ -3,7 +3,7 @@ setlocal enabledelayedexpansion
 cls
 
 :: ==========================================
-::    geetRPC - Build Tool
+::    geetRP - Build Tool
 :: ==========================================
 
 :: Initial variables
@@ -17,7 +17,7 @@ goto :main
 :draw_bar
 cls
 echo ==========================================
-echo    geetRPC - Build Tool
+echo    geetRP - Build Tool
 echo ==========================================
 echo.
 echo  Progress: [!BAR!] !PROGRESS!%%
@@ -70,7 +70,7 @@ if exist upx.exe (
     )
 )
 
-python -m PyInstaller --log-level WARN --noconfirm --onefile !ICON_ARG! !UPX_ARG! --add-data "icon.ico;." --version-file="file_version_info.txt" --name "geetRPC" main.py >nul 2>&1
+python -m PyInstaller --log-level WARN --noconfirm --onefile !ICON_ARG! !UPX_ARG! --add-data "icon.ico;." --version-file="file_version_info.txt" --name "geetRP" main.py >nul 2>&1
 
 :: --- Step 4: Finalizing ---
 set "PROGRESS=80"
@@ -85,7 +85,7 @@ set "PROGRESS=95"
 set "STAGE=Membuat paket ZIP Rilis..."
 set "BAR=###################-"
 call :draw_bar
-powershell -Command "Compress-Archive -Path 'dist\geetRPC.exe', 'config.json', 'README.md' -DestinationPath 'geetRPC-%VERSION%.zip' -Force"
+powershell -Command "Compress-Archive -Path 'dist\geetRP.exe', 'config.json', 'README.md' -DestinationPath 'geetRP-%VERSION%.zip' -Force"
 
 :: --- Step 6: Done ---
 set "PROGRESS=100"
