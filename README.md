@@ -11,7 +11,7 @@
 
 <br/>
 
-Generator Discord Rich Presence yang **ringan**, **cepat**, dan **sepenuhnya otomatis**.  
+Generator Discord Rich Presence yang **ringan**, **cepat**, dan **sepenuhnya otomatis**.
 Berjalan senyap di latar belakang untuk menampilkan status profesional dari berbagai aplikasi.
 
 <br/>
@@ -38,7 +38,7 @@ Status **tetap melengket** selama aplikasi terlihat di Taskbar. Tidak akan hilan
 
 ### 🎨 Dynamic Icon Mapping
 
-Logo spesifik untuk setiap aplikasi (Brave, Chrome, Photoshop, VSCode, dll) muncul secara dinamis melalui satu Client ID pusat.
+Logo spesifik untuk setiap aplikasi (Brave, Chrome, Photoshop, Microsoft Word, dll) muncul secara dinamis melalui satu Client ID pusat.
 
 </td>
 <td width="50%">
@@ -93,7 +93,7 @@ Catatan v1.5.1: Perbaikan stabilitas—deteksi ganda instance, pemeriksaan keber
 
 ```bash
 # Clone repository
-git clone https://github.com/makcrtve/geetRP.git 
+git clone https://github.com/makcrtve/geetRP.git
 cd geetRP
 
 # Install dependencies
@@ -165,7 +165,7 @@ Edit file `config.json` untuk menambah atau mengkustomisasi software yang ingin 
 **Checklist:**
 
 - ✅ Pastikan Discord **Desktop App** berjalan (bukan versi browser)
-- ✅ Aktifkan **"Display current activity"** di:  
+- ✅ Aktifkan **"Display current activity"** di:
   `Discord Settings` → `Activity Privacy`
 - ✅ Cek `debug.log` untuk melihat error messages
 - ✅ Restart kedua aplikasi (Discord & geetRP)
@@ -236,7 +236,7 @@ Kontribusi sangat diterima! Berikut caranya:
 
 ### 🎨 Software Request
 
-Ingin logo atau status khusus untuk software favorit Anda?  
+Ingin logo atau status khusus untuk software favorit Anda?
 Ajukan melalui **[Software Request Template](https://github.com/makcrtve/geetRP/issues/new/choose )**!
 
 ---
